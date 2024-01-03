@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/xayjyaqu/e-mart.bael.my.id/
+    - /bin/cp -r * $DEPLOYPATH
