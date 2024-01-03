@@ -9,7 +9,7 @@ class Admin extends CI_Controller
         $data['title'] = 'ADMIN INDOMARKET';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/admin_sidebar', $data);
+        $this->load->view('templates/sidebar', $data);
         $this->load->view('admin/index', $data);
         $this->load->view('templates/footer');
     }
@@ -20,7 +20,7 @@ class Admin extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['email' => 
         $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/admin_sidebar', $data);
+        $this->load->view('templates/sidebar', $data);
         $this->load->view('admin/myprofile', $data);
         $this->load->view('templates/footer', $data);
     }
@@ -38,7 +38,7 @@ class Admin extends CI_Controller
         $this->model_user->updateOnlineStatus($this->session->userdata('email'), 'online');
         // Load view dengan data yang telah diambil
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/admin_sidebar', $data);
+        $this->load->view('templates/sidebar', $data);
         $this->load->view('admin/userinformasi', $data);
         $this->load->view('templates/footer', $data);
         

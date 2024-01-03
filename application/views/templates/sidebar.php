@@ -2,7 +2,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('user');?>">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('user'); ?>">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-store"></i>
                 </div>
@@ -11,78 +11,75 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider">
-            <div class="sidebar-heading">
-                Administrator
-            </div>
+            <!-- QUERY MENU -->
+            <?php
+            $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('user');?>">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
+            // Periksa apakah role_id ada dalam $data['user']
+            if (isset($data['user']['role_id'])) {
+                $role_id = $data['user']['role_id'];
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
+                $queryMenu = "SELECT `user_menu`.`id`, `menu`
+                  FROM `user_menu` JOIN `user_access_menu`
+                  ON `user_menu`.`id` = `user_access_menu`.`menu_id`
+                  WHERE `user_access_menu`.`role_id` = $role_id
+                  ORDER BY `user_access_menu`.`menu_id` ASC";
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                user
-            </div>
+                $menu = $this->db->query($queryMenu)->result_array();
+            } else {
+                echo "Role ID tidak valid.";
+            }
+            ?>
+            <!-- LOOPING MENU-->
+            <?php foreach ($menu as $m) : ?>
+                <div class="sidebar-heading">
+                    <?= $m['menu']; ?>
+                </div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('user/myprofile');?>">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>My Profile</span></a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider">
+                <!-- SIAPKAN SUB-MENU SESUAI MENU -->
+                <?php
+                $menuId = $m['id'];
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                product
-            </div>
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Makanan dan Minuman</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Aksesoris</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Sembako</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Pesion Pria Dan Wanita</span></a>
-            </li>
+                $querySubMenu = "SELECT *
+                 FROM `user_sub_menu` JOIN `user_menu`
+                 ON `user_sub_menu`.`menu_id` = `user_menu`.`id`
+                 WHERE `user_sub_menu`.`menu_id` = $menuId
+                 AND `user_sub_menu`.`is_active` = 1
+                ";
+                $subMenu = $this->db->query($querySubMenu)->result_array();
+                ?>
 
 
+                <?php foreach ($subMenu as $sm) : ?>
+                    <?php if ($title == $sm['title']) : ?>
+                        <li class="nav-item active">
+                        <?php else : ?>
+                        <li class="nav-item">
+                        <?php endif; ?>
+                        <a class="nav-link" href="<?= base_url($sm['url']); ?>">
+                            <i class="<?= $sm['icon']; ?>"></i>
+                            <span><?= $sm['title']; ?></span></a>
+                        </li>
 
-          
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            <li class="nav-item">
-                <a class="nav-link" href="" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-fw fa-sign-out-alt"></i>
-                    <span>logout</span></a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+                    <?php endforeach; ?>
 
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+                    <hr class="sidebar-divider">
+                <?php endforeach; ?>
+
+                <!-- Divider -->
+
+                <li class="nav-item">
+                    <a class="nav-link" href="" data-toggle="modal" data-target="#logoutModal">
+                        <i class="fas fa-fw fa-sign-out-alt"></i>
+                        <span>logout</span></a>
+                </li>
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
 
         </ul>
         <!-- End of Sidebar -->
@@ -116,7 +113,7 @@
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="<?php echo base_url('user/myprofile');?>">
+                                <a class="dropdown-item" href="<?php echo base_url('user/myprofile'); ?>">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     My Profile
                                 </a>

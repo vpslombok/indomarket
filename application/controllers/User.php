@@ -16,7 +16,7 @@ class User extends CI_Controller
         $this->model_user->updateOnlineStatus($this->session->userdata('email'), 'online');
         $data['title'] = 'INDOMARKET';
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar' );
+        $this->load->view('templates/sidebar', $data );
         $this->load->view('user/index', $data);
         $this->load->view('templates/footer' );
        
@@ -27,7 +27,7 @@ class User extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['title'] = 'My Profile';
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar' );
+        $this->load->view('templates/sidebar', $data );
         $this->load->view('user/myprofile', $data);
         $this->load->view('templates/footer' );
     }
@@ -37,7 +37,7 @@ class User extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['title'] = 'Edit Profile';
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar' );
+        $this->load->view('templates/sidebar', $data );
         $this->load->view('user/editprofile', $data);
         $this->load->view('templates/footer' );
     }
