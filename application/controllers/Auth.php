@@ -16,7 +16,7 @@ class Auth extends CI_Controller
         if ($this->form_validation->run() == false) { //untuk mengecek apakah inputan sudah sesuai dengan rules atau belum
             $data['title'] = 'Halaman Login'; //untuk mengirimkan data ke view [application/views/auth/login.php
             $this->load->view('templates/auth_header', $data);
-            $this->load->view('auth/login');
+            $this->load->view('Auth/login');
             $this->load->view('templates/auth_footer');
         } else {
             //validasinya sukses
