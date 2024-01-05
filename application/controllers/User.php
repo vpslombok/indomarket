@@ -3,9 +3,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class User extends CI_Controller
 {
-    public function __construct() {
-        parent::__construct();
-        $this->load->model('Model_barang');
+    public function __construct()
+    {
+        parent ::__construct();
+        is_logged_in();
     }
     
     public function index()
@@ -182,6 +183,51 @@ class User extends CI_Controller
         $this->load->view('templates/sidebar' );
         $this->load->view('user/index', $data);
         $this->load->view('templates/footer' );
+    }
+
+    public function ubahpassword()
+    {
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['title'] = 'Ubah Password';
+
+        $this->form_validation->set_rules('current_password', 'current_password', 'required|trim', [
+            'required' => 'Password Lama Harus Diisi'
+        ]);
+        $this->form_validation->set_rules('new_password1', 'current_password1', 'required|trim|min_length[3]|matches[new_password2]', [
+            'required' => 'Password Lama Harus Diisi',
+            'min_length' => 'Password minimal 3 karakter',
+            'matches' => 'Password tidak sama'
+        ]);
+        $this->form_validation->set_rules('new_password2', 'new_password2', 'required|trim', [
+            'required' => 'Password Lama Harus Diisi'
+        ]);
+        if ($this->form_validation->run() == false){
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data );
+        $this->load->view('user/ubahpassword', $data);
+        $this->load->view('templates/footer' );
+       
+        } else{
+            $current_password = $this->input->post('current_password');
+            $new_password = $this->input->post('new_password1');
+            if (!password_verify($current_password, $data['user']['password'])){
+                $this->session->set_flashdata('ubahpassword', '<div class="alert alert-danger" role="alert">Password Lama Salah</div>');
+                redirect('user/ubahpassword');
+            } else{
+                if ($current_password == $new_password){
+                    $this->session->set_flashdata('ubahpassword', '<div class="alert alert-danger" role="alert">Password Baru Tidak Boleh Sama Dengan Password Lama</div>');
+                    redirect('user/ubahpassword');
+                } else{
+                    //password sudah ok
+                    $password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+                    $this->db->set('password', $password_hash); //untuk mengupdate data password
+                    $this->db->where('email', $this->session->userdata('email')); //untuk mengupdate data email
+                    $this->db->update('user'); //untuk mengupdate data user
+                    $this->session->set_flashdata('ubahpassword', '<div class="alert alert-success" role="alert">Password Berhasil Diubah</div>');
+                    redirect('user/ubahpassword');
+                }
+            }
+        }
     }
     
 }

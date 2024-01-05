@@ -6,7 +6,7 @@
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-store"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">INDOMARKET</div>
+                <div class="sidebar-brand-text mx-3"><?php echo ($title);?></div>
             </a>
 
             <!-- Divider -->
@@ -56,14 +56,14 @@
                         <?php else : ?>
                         <li class="nav-item">
                         <?php endif; ?>
-                        <a class="nav-link" href="<?= base_url($sm['url']); ?>">
+                        <a class="nav-link pb-0" href="<?= base_url($sm['url']); ?>">
                             <i class="<?= $sm['icon']; ?>"></i>
                             <span><?= $sm['title']; ?></span></a>
                         </li>
 
                     <?php endforeach; ?>
 
-                    <hr class="sidebar-divider">
+                    <hr class="sidebar-divider mt-3">
                 <?php endforeach; ?>
 
                 <!-- Divider -->

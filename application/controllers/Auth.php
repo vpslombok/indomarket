@@ -39,14 +39,14 @@ class Auth extends CI_Controller
                 if (password_verify($password, $user['password'])) {
                     $data = [
                         'email' => $user['email'],
-                        'role'  => $user['role_id'],
+                        'role_id'  => $user['role_id'],
 
                     ];
                     $this->session->set_userdata($data); //untuk membuat session
                     if ($user['role_id'] == 1) {
                         redirect('admin');
-                    }else{
-                        redirect('user');                        
+                    } else {
+                        redirect('user');
                     }
                 } else {
                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password salah</div>'); //untuk menampilkan pesan berhasil
@@ -120,5 +120,10 @@ class Auth extends CI_Controller
         redirect('auth'); //untuk mengarahkan ke halaman login
         $response = array('status' => 'success', 'message' => 'Login successful');
         echo json_encode($response);
+    }
+
+    public function blocked()
+    {
+        $this->load->view('auth/blocked'); //untuk menampilkan halaman blocked
     }
 }

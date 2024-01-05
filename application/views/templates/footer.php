@@ -51,30 +51,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>   
 
     <script>
-    function updateStatus() {
+    $('.form-check-input').on('click', function() {
+        const menuId = $(this).data('menu');
+        const roleId = $(this).data('role');
+        
         $.ajax({
-            type: 'GET',
-            url: '<?php echo base_url('user/getStatus'); ?>',
-            dataType: 'json',
-            success: function(response){
-                // Ubah status pada elemen HTML tanpa reload halaman
-                $('#statusCell').text(response.status);
-
-                // Ubah warna dan properti lain jika perlu
-                $('#statusCell').removeClass().addClass('status-cell ' + response.class);
-
-                // Lakukan polling kembali setelah beberapa detik
-                setTimeout(updateStatus, 5000); // misalnya setiap 5 detik
+            url: "<?php echo base_url('admin/changeaccess'); ?>",
+            type: 'post',
+            data: {
+                menuId: menuId,
+                roleId: roleId
             },
-            error: function(xhr, status, error){
-                console.error(xhr.responseText);
+            success: function() {
+                document.location.href = "<?php echo base_url('admin/roleaccess/'); ?>" + roleId;
             }
         });
-    }
-
-    $(document).ready(function(){
-        // Mulai polling saat halaman dimuat
-        updateStatus();
     });
 </script>
 
