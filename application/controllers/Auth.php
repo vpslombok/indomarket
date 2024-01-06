@@ -88,21 +88,66 @@ class Auth extends CI_Controller
             $this->load->view('auth/registration');
             $this->load->view('templates/auth_footer');
         } else {
+            $email = $this->input->post('email', true); //untuk mengambil data dari inputan email
             $data = [
                 'name' => htmlspecialchars($this->input->post('name', true)), //untuk mengamankan inputan name dari karakter aneh
-                'email' => htmlspecialchars($this->input->post('email', true)), //untuk mengamankan inputan email dari karakter aneh
+                'email' => htmlspecialchars($email), //untuk mengamankan inputan email dari karakter aneh
                 'image' => 'default.jpg',
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT), //untuk mengamankan inputan password dari karakter aneh
                 'role_id' => 2,
-                'is_active' => 1,
+                'is_active' => 0,
+                'date_created' => time()
+            ];
+            //siapkan token
+            $token = base64_encode(random_bytes(32)); //untuk membuat token secara random
+            $user_token = [
+                'email' => $email,
+                'token' => $token,
                 'date_created' => time()
             ];
 
-            $this->db->insert('user', $data); //untuk memasukkan data ke database
+             $this->db->insert('user', $data); //untuk memasukkan data ke database
+             $this->db->insert('user_token', $user_token); //untuk memasukkan data ke database
+
+            $this->_sendEmail($token, 'verify'); //untuk mengirimkan email verifikasi
+
+
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Selamat! Akun Anda Sudah Terdaftar</div>'); //untuk menampilkan pesan berhasil
             redirect('auth'); //untuk mengarahkan ke halaman login
         }
     }
+
+    private function _sendEmail($token, $type)
+    {
+        $config = [
+            'protocol'  => 'smtp', // protokol yang digunakan
+            'smtp_host' => 'tls://smtp.googlemail.com', // host yang digunakan
+            'smtp_user' => 'dayemamben@gmail.com', // email yang digunakan
+            'smtp_pass' => 'tbetwwllohhvjata', // password email yang digunakan
+            'smtp_port' => 587, // port yang digunakan
+            'mailtype'  => 'html', // tipe email yang digunakan
+            'charset'   => 'utf-8', // charset yang digunakan
+            'newline'   => "\r\n", // baris baru
+            'smtp_crypto' => 'tls', // tambahkan opsi ini untuk TLS
+        ];
+        $this->email->initialize($config); // untuk menginisialisasi pengiriman email
+    
+        $this->email->from('dayemamben@gmail.com', 'VPS Lombok NTB'); // email pengirim
+        $this->email->to($this->input->post('email')); // email penerima
+    
+        if ($type == 'verify') {
+            $this->email->subject('verifikasi akun'); // subjek email
+            $this->email->message('Klik link ini untuk verifikasi akun anda: <a href="' . base_url() . 'auth/verify?email=' . $this->input->post('email') . '&token=' . urlencode($token) . '">Aktifkan</a>'); // isi email
+        }
+    
+        if ($this->email->send()) {
+            return true;
+        } else {
+            echo $this->email->print_debugger();
+            die;
+        }
+    }
+    
 
     public function logout()
     {
