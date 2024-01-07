@@ -12,5 +12,18 @@ class Model_User extends CI_Model{
         $this->db->where('email', $email);
         $this->db->update('user', $data);
     }
+
+    public function get_number_of_user() {
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('user');
+        return $this->db->get()->row()->total;
+    }
+
+    public function get_number_of_user_online() {
+        $this->db->select('COUNT(*) as total');
+        $this->db->from('user');
+        $this->db->where('online_status', 'online');
+        return $this->db->get()->row()->total;
+    }
     
 }

@@ -11,6 +11,8 @@ class Admin extends CI_Controller
 
     public function index()
     {
+        $data['number_of_user'] = $this->model_user->get_number_of_user();
+        $data['data_user_online'] = $this->model_user->get_number_of_user_online();
         $data['title'] = 'ADMIN INDOMARKET';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
@@ -47,6 +49,14 @@ class Admin extends CI_Controller
         $this->load->view('admin/userinformasi', $data);
         $this->load->view('templates/footer', $data);
         
+    }
+
+    public function hapus($id)
+    {
+        $where = array('id' => $id);
+        $this->db->delete('user', $where);
+        $this->session->set_flashdata('pesan hapus akun', '<div class="alert alert-danger" role="alert">Data Berhasil Dihapus</div>');
+        redirect('admin/userinformasi');
     }
 
     public function tambah_user()

@@ -83,14 +83,6 @@ class User extends CI_Controller
         redirect('user/myprofile'); //untuk mengarahkan ke halaman myprofile
     }
 
-    public function logout()
-    {
-        $this->session->unset_userdata('email'); //untuk menghapus session email
-        $this->session->unset_userdata('role'); //untuk menghapus session role
-        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Anda Telah Logout</div>'); //untuk menampilkan pesan berhasil
-        redirect('auth'); //untuk mengarahkan ke halaman login
-    }
-
     public function keranjang()
     {
         $data['title'] = 'Keranjang';

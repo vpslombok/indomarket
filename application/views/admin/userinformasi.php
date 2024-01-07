@@ -1,9 +1,25 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <button class="btn btn-sm btn-primary mb-1" data-toggle="modal" data-target="#tambah_user"><i class="fas fa-plus fa-sm"></i> Tambah User</button>
-    <table class="table table-bordered " style="width: 100%;">
+<style>
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: 800px; /* Atur lebar minimum tabel sesuai kebutuhan */
+    }
+</style>
+
+<!-- Page Heading -->
+<button class="btn btn-sm btn-primary mb-1" data-toggle="modal" data-target="#tambah_user"><i class="fas fa-plus fa-sm"></i> Tambah User</button>
+<h1 class="h3 mb-2 text-gray-800">User Informasi</h1>
+<p class="mb-4">Data User yang terdaftar di website ini.</p>
+<?= $this->session->flashdata('pesan hapus akun'); ?>
+
+<div class="table-container">
+    <table class="table table-bordered">
         <tr>
             <th style="font-size: 10px; text-align: center;">NO</th>
             <th style="font-size: 10px; text-align: center;">NAMA</th>
@@ -14,7 +30,6 @@
             <th style="font-size: 10px; text-align: center;">STATUS ONLINE</th>
             <th colspan="3" style="font-size: 10px; text-align: center;">AKSI</th>
         </tr>
-
         <?php
         $no = 1;
         foreach ($users as $user) : ?>
@@ -41,9 +56,9 @@
 
 
 
-                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/user/edit/' . $user->id) ?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
-                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/user/hapus/' . $user->id) ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
-                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/user/detail/' . $user->id) ?>" class="btn btn-sm btn-primary"><i class="fas fa-search-plus"></i></a></td>
+                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/edit/' . $user->id) ?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a></td>
+                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/hapus/' . $user->id) ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
+                <td class="" style="font-size: 10Px;"><a href="<?= base_url('admin/detail/' . $user->id) ?>" class="btn btn-sm btn-primary"><i class="fas fa-search-plus"></i></a></td>
             </tr>
 
         <?php endforeach; ?>
