@@ -13,6 +13,7 @@ class Admin extends CI_Controller
     {
         $data['number_of_user'] = $this->model_user->get_number_of_user();
         $data['data_user_online'] = $this->model_user->get_number_of_user_online();
+        $data['jumlah_produk'] = $this->model_user->get_number_of_barang();
         $data['title'] = 'ADMIN INDOMARKET';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
@@ -74,7 +75,7 @@ class Admin extends CI_Controller
     {
         $data['title'] = 'Role';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-
+        
         $data['role'] = $this->db->get('user_role')->result_array();
 
         $this->load->view('templates/header', $data);
@@ -116,7 +117,83 @@ class Admin extends CI_Controller
             $this->db->delete('user_access_menu', $data); //untuk menghapus data dari database
         }
 
-        $this->session->set_flashdata('role-access', '<div class="alert alert-success" role="alert">Access Changed!</div>'); //untuk menampilkan pesan berhasil
+        $this->session->set_flashdata('role', '<div class="alert alert-success" role="alert">Access Changed!</div>'); //untuk menampilkan pesan berhasil
+    }
+
+    public function roleedit()
+    {
+        $data['title'] = 'Role Edit';
+        $data['role'] = $this->db->get_where('user_role', ['id' => $this->uri->segment(3)])->row_array();
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/admin_sidebar', $data);
+        $this->load->view('admin/role_edit', $data);
+        $this->load->view('templates/footer', $data);
+        $this->session->set_flashdata('role', '<div class="alert alert-success" role="alert">Role Berhasil Diedit</div>');
+        redirect('admin/role');
+    }
+
+    public function roledelete()
+    {
+        $this->db->where('id', $this->uri->segment(3));
+        $this->db->delete('user_role');
+        $this->session->set_flashdata('role', '<div class="alert alert-success" role="alert">Role Berhasil Dihapus</div>');
+        redirect('admin/role');
+    }
+
+    public function databarang()
+    {
+        $data['title'] = 'Data Produk';
+        $data['barang'] = $this->model_barang->tampil_data()->result();
+        $data['user'] = $this->db->get_where('user', ['email' => 
+        $this->session->userdata('email')])->row_array();
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar', $data);
+        $this->load->view('admin/data-barang', $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+    public function tambah_barang()
+    {
+        $nama_brg       = $this->input->post('nama_brg');
+        $keterangan     = $this->input->post('keterangan');
+        $kategori       = $this->input->post('kategori');
+        $harga          = $this->input->post('harga');
+        $stok           = $this->input->post('stok');
+        $gambar         = $_FILES['gambar']['name'];
+        if ($gambar = ''){}else{
+            $config ['upload_path'] = './uploads';
+            $config ['allowed_types'] = 'jpg|jpeg|png|gif';
+
+            $this->load->library('upload', $config);
+            if(!$this->upload->do_upload('gambar')){
+                echo "Gambar gagal diupload!";
+            }else{
+                $gambar=$this->upload->data('file_name');
+            }
+        }
+
+        $data = array(
+            'nama_brg'      => $nama_brg,
+            'keterangan'    => $keterangan,
+            'kategori'      => $kategori,
+            'harga'         => $harga,
+            'stok'          => $stok,
+            'gambar'        => $gambar
+        );
+        $this->session->set_flashdata('data-barang', '<div class="alert alert-success" role="alert">Data Berhasill di tambah</div>');
+
+        $this->model_barang->tambah_barang($data, 'tb_barang');
+        redirect('admin/databarang');
+    }
+
+    public function hapus_produk($id)
+    {
+        $where = array('id_brg' => $id);
+        $this->model_barang->hapus_produk($where, 'tb_barang');
+        $this->session->set_flashdata('data-barang', '<div class="alert alert-success" role="alert">Data Berhasil Dihapus</div>');
+        redirect('admin/databarang');
     }
 
 }
+

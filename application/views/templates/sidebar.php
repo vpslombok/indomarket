@@ -1,4 +1,25 @@
         <!-- Sidebar -->
+<style>
+    /* Add this in your CSS file or within <style> tags */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  
+  .sidebar.toggled {
+    display: none;
+  }
+
+  .sidebar.toggled .collapse {
+    display: none;
+  }
+
+  .sidebar-toggled {
+    margin-left: 0;
+  }
+}
+</style>
+        
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->

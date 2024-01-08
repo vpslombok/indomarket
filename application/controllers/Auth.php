@@ -143,10 +143,20 @@ class Auth extends CI_Controller
             </button>'); // isi email
         }else if($type == 'forgot') {
             $this->email->subject('Reset Password'); // subjek email
-            $this->email->message('Klik tombol di bawah ini untuk reset password Anda:<br>
+            $this->email->message('
+            <p>Klik tombol di bawah ini untuk reset password Anda:</p>
+            
             <button type="button" style="padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
                 <a href="' . base_url() . 'auth/resetpassword?email=' . $this->input->post('email') . '&token=' . urlencode($token) . '" style="text-decoration: none; color: white;">Reset Password</a>
-            </button>'); // isi email
+            </button>
+        
+            <p>Atau kunjungi toko online kami:</p>
+            
+            <div style="text-align: center;">
+            <a href="https://imgbb.com/"><img src="https://i.ibb.co/162h2Td/1694406676-94634.png" alt="1694406676-94634" border="0" /></a>
+            </div>
+        ');
+        
         }
 
         if ($this->email->send()) {
@@ -259,8 +269,15 @@ class Auth extends CI_Controller
             $user_token = $this->db->get_where('user_token', ['token' => $token])->row_array(); //untuk mengambil data dari database berdasarkan token
 
             if ($user_token) {
-                $this->session->set_userdata('reset_email', $email);
-                $this->changePassword();
+                if (time() - $user_token['date_created'] < (300)) { //untuk mengecek apakah token sudah expired atau belum
+                    $this->session->set_userdata('reset_email', $email);
+                    $this->changePassword();
+                } else {
+                    $this->db->delete('user', ['email' => $email]); //untuk menghapus data di database
+                    $this->db->delete('user_token', ['email' => $email]); //untuk menghapus data di database
+                    $this->session->set_flashdata('lupapassword', '<div class="alert alert-danger" role="alert">Reset Password Gagal! Token Kadaluarsa</div>'); //untuk menampilkan pesan berhasil
+                    redirect('auth/forgotpassword'); //untuk mengarahkan ke halaman login
+                }
             } else {
                 $this->session->set_flashdata('lupapassword', '<div class="alert alert-danger" role="alert">Reset Password Gagal! Token Salah</div>'); //untuk menampilkan pesan berhasil
                 redirect('auth/forgotpassword'); //untuk mengarahkan ke halaman login
