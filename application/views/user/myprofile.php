@@ -1,16 +1,6 @@
-<?php
-function getRoleName($role_id) {
-    switch ($role_id) {
-        case 1:
-            return "member";
-            break;
-    }
-}
-
-// Contoh penggunaan
-$user['role_id'] = 1; // Gantilah nilai ini sesuai dengan nilai role_id yang Anda miliki
+<?php 
+ 
 ?>
-
 <div class="container-fluid">
 
      <!-- Page Heading -->
@@ -26,7 +16,7 @@ $user['role_id'] = 1; // Gantilah nilai ini sesuai dengan nilai role_id yang And
                      <h5 class="card-title"><?= $user['name']; ?></h5>
                      <p class="card-text"><?= $user['email']; ?></p>
                      <p class="card-text"><small class="text-muted">di buat pada <?= date('d F Y', $user['date_created']); ?></small></p>
-                     <p class="card-text"><small class="text-muted">sebagai <?= getRoleName($user['role_id']); ?></small></p>
+                     <p class="card-text"><small class="text-muted">sebagai <?= $user_role; ?></small></p>
                      <td>
                          <a href="<?php echo base_url('user/editprofile'); ?>" class="btn btn-primary">Edit Profile</a>
                      </td>
@@ -34,5 +24,5 @@ $user['role_id'] = 1; // Gantilah nilai ini sesuai dengan nilai role_id yang And
              </div>
          </div>
      </div>
-
+</div>
 </div>

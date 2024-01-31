@@ -31,5 +31,5 @@ class Model_User extends CI_Model{
         $this->db->from('tb_barang');
         return $this->db->get()->row()->total;
     }
-    
+     
 }

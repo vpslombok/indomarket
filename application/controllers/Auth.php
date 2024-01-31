@@ -112,7 +112,7 @@ class Auth extends CI_Controller
             $this->_sendEmail($token, 'verify'); //untuk mengirimkan email verifikasi
 
 
-            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Selamat! Akun Anda Sudah Terdaftar</div>'); //untuk menampilkan pesan berhasil
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Cek Email Anda Untuk Verifikasi</div>'); //untuk menampilkan pesan berhasil
             redirect('auth'); //untuk mengarahkan ke halaman login
         }
     }

@@ -1,25 +1,25 @@
         <!-- Sidebar -->
-<style>
-    /* Add this in your CSS file or within <style> tags */
-@media (max-width: 768px) {
-  .sidebar {
-    display: none;
-  }
-  
-  .sidebar.toggled {
-    display: none;
-  }
+        <!-- <style>
+            /* Add this in your CSS file or within <style> tags */
+            @media (max-width: 768px) {
+                .sidebar {
+                    display: none;
+                }
 
-  .sidebar.toggled .collapse {
-    display: none;
-  }
+                .sidebar.toggled {
+                    display: none;
+                }
 
-  .sidebar-toggled {
-    margin-left: 0;
-  }
-}
-</style>
-        
+                .sidebar.toggled .collapse {
+                    display: none;
+                }
+
+                .sidebar-toggled {
+                    margin-left: 0;
+                }
+            }
+        </style> -->
+
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -27,7 +27,7 @@
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-store"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3"><?php echo ($title);?></div>
+                <div class="sidebar-brand-text mx-3"><?php echo ($title); ?></div>
             </a>
 
             <!-- Divider -->
@@ -114,23 +114,53 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
+
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
+                    <?php
+                    // Simulasi total item dari variabel sesi
+                    $totalItem = $this->cart->total_items();
+                    ?>
+                    <style>
+                        /* Gaya CSS untuk lingkaran bundar */
+                        .badge {
+                            background-color: #dc3545;
+                            color: #fff;
+                            border-radius: 50%;
+                            padding: 4px 4px;
+                            font-size: 9px;
+                            position: absolute;
+                            top: 4px;
+                            right: 4px;
+                        }
+                    </style>
+
+                    <!-- keranjang belanja -->
+                    <div class="col-6">
+                        <a href="<?= base_url('user/keranjang'); ?>" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge"><?= $totalItem; ?></span>
+                        </a>
+                    </div>
 
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <div class="topbar-divider d-none d-sm-block"></div>
 
+
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $user['name']; ?></span>
-                                <img class="img-profile rounded-circle" src="<?php echo base_url('assets/img/profile/') . $user['image']; ?>">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php if ($user) : ?>
+                                        <span><?php echo $user['name']; ?></span>
+                                        <img class="img-profile rounded-circle" src="<?php echo base_url('assets/img/profile/') . $user['image']; ?>">
+                                    <?php endif; ?>
+
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

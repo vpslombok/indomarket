@@ -5,7 +5,7 @@ class Admin extends CI_Controller
 {
     public function __construct()
     {
-        parent ::__construct();
+        parent::__construct();
         is_logged_in();
     }
 
@@ -21,11 +21,11 @@ class Admin extends CI_Controller
         $this->load->view('admin/index', $data);
         $this->load->view('templates/footer');
     }
-    
+
     public function myprofile()
     {
         $data['title'] = 'My Profile';
-        $data['user'] = $this->db->get_where('user', ['email' => 
+        $data['user'] = $this->db->get_where('user', ['email' =>
         $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
@@ -36,10 +36,10 @@ class Admin extends CI_Controller
     public function userinformasi()
     {
         $data['title'] = 'User Informasi';
-        
+
         // Ambil data user dari model
         $data['users'] = $this->model_user->tampil_data()->result();
-    
+
         // Ambil data user berdasarkan email dari session
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $this->load->model('model_user');
@@ -49,7 +49,6 @@ class Admin extends CI_Controller
         $this->load->view('templates/sidebar', $data);
         $this->load->view('admin/userinformasi', $data);
         $this->load->view('templates/footer', $data);
-        
     }
 
     public function hapus($id)
@@ -63,19 +62,19 @@ class Admin extends CI_Controller
     public function tambah_user()
     {
         $data['title'] = 'Tambah User';
-        $data['user'] = $this->db->get_where('user', ['email' => 
+        $data['user'] = $this->db->get_where('user', ['email' =>
         $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/admin_sidebar', $data);
         $this->load->view('admin/tambah_user', $data);
         $this->load->view('templates/footer', $data);
     }
-    
+
     public function role()
     {
         $data['title'] = 'Role';
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-        
+
         $data['role'] = $this->db->get('user_role')->result_array();
 
         $this->load->view('templates/header', $data);
@@ -145,7 +144,7 @@ class Admin extends CI_Controller
     {
         $data['title'] = 'Data Produk';
         $data['barang'] = $this->model_barang->tampil_data()->result();
-        $data['user'] = $this->db->get_where('user', ['email' => 
+        $data['user'] = $this->db->get_where('user', ['email' =>
         $this->session->userdata('email')])->row_array();
         $this->load->view('templates/header', $data);
         $this->load->view('templates/sidebar', $data);
@@ -161,17 +160,23 @@ class Admin extends CI_Controller
         $harga          = $this->input->post('harga');
         $stok           = $this->input->post('stok');
         $gambar         = $_FILES['gambar']['name'];
-        if ($gambar = ''){}else{
-            $config ['upload_path'] = './uploads';
-            $config ['allowed_types'] = 'jpg|jpeg|png|gif';
+        if ($gambar != '') {
+        $config['upload_path']   = './uploads';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
 
-            $this->load->library('upload', $config);
-            if(!$this->upload->do_upload('gambar')){
-                echo "Gambar gagal diupload!";
-            }else{
-                $gambar=$this->upload->data('file_name');
-            }
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('gambar')) {
+            echo "Gambar gagal diupload!";
+        } else {
+            $uploaded_data = $this->upload->data();
+
+            // Call the new function to resize the image
+            $this->resize_image($uploaded_data['full_path']);
+
+            $gambar = $uploaded_data['file_name'];
         }
+    }
 
         $data = array(
             'nama_brg'      => $nama_brg,
@@ -187,13 +192,42 @@ class Admin extends CI_Controller
         redirect('admin/databarang');
     }
 
+    public function resize_image($source_path)
+{
+    $config['image_library']  = 'gd2';
+    $config['source_image']   = $source_path;
+    $config['maintain_ratio'] = TRUE;
+    $config['width']          = 800; // Set your desired width
+    $config['height']         = 600; // Set your desired height
+
+    $this->load->library('image_lib', $config);
+
+    if (!$this->image_lib->resize()) {
+        echo $this->image_lib->display_errors();
+    }
+
+    $this->image_lib->clear();
+}
+
     public function hapus_produk($id)
     {
-        $where = array('id_brg' => $id);
+        // Dapatkan informasi gambar sebelum menghapus produk
+        $produk = $this->model_barang->get_produk_by_id($id);
+        $gambar_produk = $produk['gambar'];
+
+        // Hapus data produk dari database
+        $where = array('id_brg' => $id); // Change 'id' to 'id_brg'
         $this->model_barang->hapus_produk($where, 'tb_barang');
+
+        // Hapus gambar terkait dari folder uploads
+        if ($gambar_produk != '') {
+            $path_gambar = './uploads/' . $gambar_produk;
+            if (file_exists($path_gambar)) {
+                unlink($path_gambar);
+            }
+        }
+        // Set flashdata dan redirect
         $this->session->set_flashdata('data-barang', '<div class="alert alert-success" role="alert">Data Berhasil Dihapus</div>');
         redirect('admin/databarang');
     }
-
 }
-

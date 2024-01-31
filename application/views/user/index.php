@@ -32,11 +32,11 @@
                  <div class="row text-center mt-2">
                    <?php foreach ($barang as $brg) : ?>
                      <div class="card ml-2 mt-1 mx-auto" style="width: 10rem;">
-                       <img src="<?php echo base_url() . 'uploads/' . $brg->gambar ?>" class="card-img-top" alt="...">
+                     <img src="<?php echo base_url() . 'uploads/' . $brg->gambar ?>" class="card-img-top" alt="..." height="140">
                        <div class="card-body">
                          <h6 class="card-title text-sm"><?php echo $brg->nama_brg ?> </h6>
                          <small class="text-sm"><?php echo $brg->keterangan ?></small>
-                         <br><span class="badge badge-pill badge-s mb-3">RP <?php echo number_format($brg->harga, 0, ',', '.')  ?></span></br>
+                         <br><span style="font-size: 13px; color: black;" >RP <?php echo number_format($brg->harga, 0, ',', '.')  ?></span></br>
                          <?php echo anchor('user/tambah_ke_keranjang/' . $brg->id_brg, '<div class="btn btn-sm btn-primary mx-auto">Beli</div>') ?>
                          <?php echo anchor('user/detail/' . $brg->id_brg, '<div class="btn btn-sm btn-success">Detail</div>') ?>
                        </div>

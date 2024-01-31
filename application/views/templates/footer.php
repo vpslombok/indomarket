@@ -70,7 +70,7 @@
 </script>
 
 
-<script>$(document).ready(function () {
+<!-- <script>$(document).ready(function () {
   // Toggle sidebar
   $("#sidebarToggle, #sidebarToggleTop").on('click', function () {
     $("body").toggleClass("sidebar-toggled");
@@ -90,7 +90,7 @@
     }
   });
 });
-</script>
+</script> -->
 
 </body>
 

@@ -24,14 +24,30 @@ class User extends CI_Controller
     }
 
     public function myprofile()
-    {
-        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-        $data['title'] = 'My Profile';
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data );
-        $this->load->view('user/myprofile', $data);
-        $this->load->view('templates/footer' );
+{
+    $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+    $data['role_id'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+    $data['title'] = 'My Profile';
+
+    // Tambahkan logika kondisional di sini
+    if ($data['role_id']['role_id'] == 1) {
+        $data['user_role'] = 'Admin';
+        $data['additional_content'] = 'Additional content for admin';
+    } elseif ($data['role_id']['role_id'] == 2) {
+        $data['user_role'] = 'Customer';
+        $data['additional_content'] = 'Additional content for customer';
+    } else {
+        $data['user_role'] = 'Undefined Role';
+        $data['additional_content'] = '';
     }
+
+    $this->load->view('templates/header', $data);
+    $this->load->view('templates/sidebar', $data);
+    $this->load->view('user/myprofile', $data);
+    $this->load->view('templates/footer');
+}
+
+
 
     public function editprofile()
     {
@@ -85,11 +101,12 @@ class User extends CI_Controller
 
     public function keranjang()
     {
-        $data['title'] = 'Keranjang';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['title'] = 'Keranjang Belanja';
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar' );
+        $this->load->view('templates/sidebar', $data );
         $this->load->view('user/keranjang', $data);
-        $this->load->view('templates/footer' );
+        $this->load->view('templates/footer', $data);
     }
 
     public function pembayaran()
@@ -113,11 +130,14 @@ class User extends CI_Controller
     public function detail($id_brg)
     {
         $data['title'] = 'Detail Produk';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
         $data['barang'] = $this->model_barang->detail_brg($id_brg);
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar' );
-        $this->load->view('user/detailbarang', $data);
-        $this->load->view('templates/footer' );
+        $this->load->view('templates/sidebar',$data );
+        $this->load->view('user/detail-produk',$data);
+        $this->load->view('templates/footer', $data);
+
+        
     }
 
     public function tambah_ke_keranjang($id)
@@ -132,6 +152,12 @@ class User extends CI_Controller
         );
 
         $this->cart->insert($data);
+        $email = $this->session->userdata('email');
+        $cart_items = $this->session->userdata('cart_items') ? $this->session->userdata('cart_items') : array();
+        $cart_items[$email] = $this->cart->total_items();
+        $this->session->set_userdata('cart_items', $cart_items);
+        
+    
         redirect('user');
     }
 
